@@ -1,11 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import axios from 'axios';
 
 import DisplayNote from './components/DisplayNote';
 
 const App = () => {
-    // const retrievedNotes = axios.get('http://localhost:3001/notes/');
+    useEffect(() => {
+        console.log('Use effect fired off');
+        axios
+            .get('http://localhost:3001/notes/')
+            .then(res => {
+                console.log('Promise fulfilled');
+                setNotes(res.data);
+            })
+            .catch(err => console.error('Promise Failed with', err));
+    }, []);
+
     const [notes, setNotes] = useState([]);
     const [newNote, setNewNote] = useState('');
     const [showAll, setShowAll] = useState(true);
