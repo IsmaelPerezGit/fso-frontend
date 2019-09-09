@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import axios from 'axios';
 
+import noteService from './services/notes';
 import DisplayNote from './components/DisplayNote';
 
 const App = () => {
     useEffect(() => {
-        console.log('Use effect fired off');
-        axios
-            .get('http://localhost:3001/notes/')
-            .then(res => {
-                console.log('Promise fulfilled');
-                setNotes(res.data);
-            })
+        noteService
+            .getAll()
+            .then(res => setNotes(res))
             .catch(err => console.error('Promise Failed with', err));
     }, []);
 
@@ -25,10 +21,10 @@ const App = () => {
         const note = notes.find(note => note.id === id);
         const changedNote = { ...note, important: !note.important };
 
-        axios
-            .put(url, changedNote)
+        noteService
+            .update(id, changedNote)
             .then(res => {
-                setNotes(notes.map(note => (note.id !== id ? note : res.data)));
+                setNotes(notes.map(note => (note.id !== id ? note : res)));
             })
             .catch(err => console.error('Put failed with', err));
     };
@@ -55,11 +51,10 @@ const App = () => {
             important: Math.random() > 0.5
         };
 
-        axios
-            .post('http://localhost:3001/notes/', noteObject)
+        noteService
+            .create(noteObject)
             .then(res => {
-                console.log(res);
-                setNotes(notes.concat(res.data));
+                setNotes(notes.concat(res));
                 setNewNote('');
             })
             .catch(err => console.error('Post failed with', err));
