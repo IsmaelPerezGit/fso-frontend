@@ -17,7 +17,6 @@ const App = () => {
     const [showAll, setShowAll] = useState(true);
 
     const toggleImportance = id => {
-        const url = `http://localhost:3001/notes/${id}`;
         const note = notes.find(note => note.id === id);
         const changedNote = { ...note, important: !note.important };
 
@@ -26,7 +25,12 @@ const App = () => {
             .then(res => {
                 setNotes(notes.map(note => (note.id !== id ? note : res)));
             })
-            .catch(err => console.error('Put failed with', err));
+            .catch(err => {
+                alert(
+                    `The note '${note.content}' was already deleted from the server`
+                );
+                setNotes(notes.filter(note => note.id !== id));
+            });
     };
 
     const noteList = () =>
