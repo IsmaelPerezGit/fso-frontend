@@ -3,6 +3,7 @@ import './App.css';
 
 import noteService from './services/notes';
 import DisplayNote from './components/DisplayNote';
+import Notification from './components/Notification';
 
 const App = () => {
     useEffect(() => {
@@ -15,6 +16,7 @@ const App = () => {
     const [notes, setNotes] = useState([]);
     const [newNote, setNewNote] = useState('');
     const [showAll, setShowAll] = useState(true);
+    const [errorMessage, setErrorMessage] = useState('Error');
 
     const toggleImportance = id => {
         const note = notes.find(note => note.id === id);
@@ -71,6 +73,7 @@ const App = () => {
     return (
         <div className='App'>
             <h1>Notes App</h1>
+            <Notification message={errorMessage} />
             <button onClick={() => setShowAll(!showAll)}>
                 Show {showAll ? 'important' : 'all'}
             </button>
