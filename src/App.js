@@ -20,8 +20,27 @@ const App = () => {
     const [newNote, setNewNote] = useState('');
     const [showAll, setShowAll] = useState(true);
 
+    const toggleImportance = id => {
+        const url = `http://localhost:3001/notes/${id}`;
+        const note = notes.find(note => note.id === id);
+        const changedNote = { ...note, important: !note.important };
+
+        axios
+            .put(url, changedNote)
+            .then(res => {
+                setNotes(notes.map(note => (note.id !== id ? note : res.data)));
+            })
+            .catch(err => console.error('Put failed with', err));
+    };
+
     const noteList = () =>
-        notesToShow.map(note => <DisplayNote key={note.id} note={note} />);
+        notesToShow.map(note => (
+            <DisplayNote
+                key={note.id}
+                note={note}
+                toggleImportance={() => toggleImportance(note.id)}
+            />
+        ));
 
     const notesToShow = showAll
         ? notes
