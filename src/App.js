@@ -4,6 +4,7 @@ import './App.css';
 import noteService from './services/notes';
 import DisplayNote from './components/DisplayNote';
 import Notification from './components/Notification';
+import Footer from './components/Footer';
 
 const App = () => {
     useEffect(() => {
@@ -16,7 +17,7 @@ const App = () => {
     const [notes, setNotes] = useState([]);
     const [newNote, setNewNote] = useState('');
     const [showAll, setShowAll] = useState(true);
-    const [errorMessage, setErrorMessage] = useState('Error');
+    const [errorMessage, setErrorMessage] = useState(null);
 
     const toggleImportance = id => {
         const note = notes.find(note => note.id === id);
@@ -28,8 +29,8 @@ const App = () => {
                 setNotes(notes.map(note => (note.id !== id ? note : res)));
             })
             .catch(err => {
-                alert(
-                    `The note '${note.content}' was already deleted from the server`
+                setErrorMessage(
+                    `Note '${note.content}' was already removed from the server`
                 );
                 setNotes(notes.filter(note => note.id !== id));
             });
@@ -63,12 +64,12 @@ const App = () => {
                 setNotes(notes.concat(res));
                 setNewNote('');
             })
-            .catch(err => console.error('Post failed with', err));
+            .catch(err => {
+              setErrorMessage('You cannot add notes unitll the server is connected')
+            });
     };
 
-    const handleFormChange = e => {
-        setNewNote(e.target.value);
-    };
+    const handleFormChange = e => setNewNote(e.target.value)
 
     return (
         <div className='App'>
@@ -82,6 +83,7 @@ const App = () => {
                 <button type='submit'>Add Note</button>
             </form>
             <ul>{noteList()}</ul>
+            <Footer/>
         </div>
     );
 };
